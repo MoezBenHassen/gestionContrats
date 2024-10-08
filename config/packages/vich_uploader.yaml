@@ -1,0 +1,10 @@
+vich_uploader:
+    db_driver: orm
+
+    mappings:
+        contratUpload:
+            uri_prefix: '%contrats%'
+            upload_destination: '%kernel.project_dir%/public%contrats%'
+        conventionUpload:
+            uri_prefix: '%conventions%'
+            upload_destination: '%kernel.project_dir%/public%conventions%'
