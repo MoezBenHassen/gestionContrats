@@ -26,6 +26,19 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Copy the application code
 COPY . /var/www/html
 
+# Update permissions in apache2.conf
+RUN echo '<Directory /var/www/html>\n\
+    Options Indexes FollowSymLinks\n\
+    AllowOverride All\n\
+    Require all granted\n\
+</Directory>' >> /etc/apache2/apache2.conf
+
+# Update the DocumentRoot in the default configuration
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+
+# Install Composer dependencies
+RUN composer install --no-scripts --no-interaction
+
 # Set file permissions
 RUN chown -R www-data:www-data /var/www/html
 
