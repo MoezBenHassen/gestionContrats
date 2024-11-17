@@ -28,7 +28,7 @@ RUN chown -R www-data:www-data /var/www/html
 RUN git config --global --add safe.directory /var/www/html
 
 # Copy composer files first
-COPY composer.json composer.lock /var/www/html/
+COPY composer.json /var/www/html/
 
 # Run composer install to install dependencies
 RUN composer install --no-scripts --no-interaction --prefer-dist
