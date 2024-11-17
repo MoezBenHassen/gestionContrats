@@ -36,8 +36,12 @@ RUN echo '<Directory /var/www/html>\n\
 # Update the DocumentRoot in the default configuration
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Install Composer dependencies
-RUN composer install --no-scripts --no-interaction
+# Add the safe directory configuration for Git
+RUN git config --global --add safe.directory /var/www/html
+
+# Install dependencies
+RUN composer install --no-scripts --no-interaction --prefer-dist
+
 
 # Set file permissions
 RUN chown -R www-data:www-data /var/www/html
