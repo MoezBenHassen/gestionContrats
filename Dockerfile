@@ -23,7 +23,17 @@ RUN a2enmod rewrite
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Copy the application code
+RUN chown -R www-data:www-data /var/www/html
+# Add the safe directory configuration for Git
+RUN git config --global --add safe.directory /var/www/html
+
+# Copy composer files first
+COPY composer.json composer.lock /var/www/html/
+
+# Run composer install to install dependencies
+RUN composer install --no-scripts --no-interaction --prefer-dist
+
+# Now copy the rest of the application code
 COPY . /var/www/html
 
 # Update permissions in apache2.conf
@@ -36,11 +46,7 @@ RUN echo '<Directory /var/www/html>\n\
 # Update the DocumentRoot in the default configuration
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Add the safe directory configuration for Git
-RUN git config --global --add safe.directory /var/www/html
 
-# Install dependencies
-RUN composer install --no-scripts --no-interaction --prefer-dist
 
 
 # Set file permissions
