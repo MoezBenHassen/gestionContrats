@@ -12,7 +12,10 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
-    curl
+    curl \
+    nodejs \
+    npm \
+    yarn
 
 # Install PHP extensions
 RUN docker-php-ext-install intl mbstring pdo pdo_mysql zip
@@ -28,10 +31,18 @@ RUN git config --global --add safe.directory /var/www/html
 
 # Copy composer files first
 COPY composer.json /var/www/html/
+COPY package.json /var/www/html/
+COPY yarn.lock /var/www/html/
 
 USER www-data
+
 # Run composer install to install dependencies
 RUN composer install --no-scripts --no-interaction --prefer-dist
+
+# Run npm install and build assets
+RUN npm install
+RUN yarn install
+RUN yarn encore dev-server --hot
 
 # Now copy the rest of the application code
 COPY . /var/www/html
