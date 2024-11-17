@@ -39,8 +39,8 @@ RUN composer install --no-scripts --no-interaction --prefer-dist
 COPY . /var/www/html
 
 # Install npm and yarn dependencies
-RUN npm install
-RUN yarn install
+# RUN npm install
+# RUN yarn install
 
 # Create the var directory and set appropriate permissions
 RUN mkdir -p /var/www/html/var && \
