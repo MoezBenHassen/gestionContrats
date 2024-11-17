@@ -29,6 +29,7 @@ RUN git config --global --add safe.directory /var/www/html
 # Copy composer files first
 COPY composer.json /var/www/html/
 
+USER www-data
 # Run composer install to install dependencies
 RUN composer install --no-scripts --no-interaction --prefer-dist
 
