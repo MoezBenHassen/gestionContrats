@@ -13,7 +13,6 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    nodejs \
     npm \
     yarn
 
@@ -31,18 +30,15 @@ RUN git config --global --add safe.directory /var/www/html
 
 # Copy composer files first
 COPY composer.json /var/www/html/
-COPY package.json /var/www/html/
-COPY yarn.lock /var/www/html/
 
+# Ensure permissions for the app files
+RUN chown -R www-data:www-data /var/www/html
+
+# Switch to www-data user to avoid permission issues
 USER www-data
 
 # Run composer install to install dependencies
 RUN composer install --no-scripts --no-interaction --prefer-dist
-
-# Run npm install and build assets
-RUN npm install
-RUN yarn install
-RUN yarn encore dev-server --hot
 
 # Now copy the rest of the application code
 COPY . /var/www/html
