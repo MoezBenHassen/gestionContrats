@@ -13,13 +13,13 @@ services:
       - APP_ENV=dev
       - DATABASE_URL=mysql://root:password@db:3306/gestioncontrat
     command: >
-      sh -c "composer install &&
-             npm install &&
-             yarn install &&
-             yarn encore dev &&
-             php bin/console doctrine:database:create --if-not-exists &&
-             php bin/console doctrine:migrations:migrate --no-interaction &&
-             apache2-foreground"
+      sh -c "
+        composer install &&
+        npm install &&
+        yarn install &&
+        php bin/console doctrine:database:create --if-not-exists &&
+        php bin/console doctrine:migrations:migrate --no-interaction &&
+        apache2-foreground"
     networks:
       - symfony
 
