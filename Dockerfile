@@ -1,3 +1,4 @@
+
 # Use the official PHP image with Apache
 FROM php:8.1-apache
 
@@ -13,7 +14,6 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    nodejs \
     npm \
     yarn
 
@@ -29,22 +29,23 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Add the safe directory configuration for Git
 RUN git config --global --add safe.directory /var/www/html
 
-# Copy only composer files first to leverage Docker cache
-COPY composer.json composer.lock /var/www/html/
+# Copy composer files first
+COPY composer.json /var/www/html/
 
-# Run composer install
+# Ensure permissions for the app files
+RUN chown -R www-data:www-data /var/www/html
+# Switch to www-data user to avoid permission issues
+USER www-data
+
+# Run composer install to install dependencies
 RUN composer install --no-scripts --no-interaction --prefer-dist
 
 # Now copy the rest of the application code
 COPY . /var/www/html
 
-# Install npm and yarn dependencies
-# RUN npm install
-# RUN yarn install
-
 # Create the var directory and set appropriate permissions
-RUN mkdir -p /var/www/html/var && \
-    chown -R www-data:www-data /var/www/html/var
+# RUN mkdir -p /var/www/html/var && \
+#     chown -R www-data:www-data /var/www/html/var
 
 # Update permissions in apache2.conf
 RUN echo '<Directory /var/www/html>\n\
