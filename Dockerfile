@@ -46,7 +46,7 @@ COPY . /var/www/html
 # Create the var directory and set appropriate permissions
 # RUN mkdir -p /var/www/html/var && \
 #     chown -R www-data:www-data /var/www/html/var
-
+USER root
 # Update permissions in apache2.conf
 RUN echo '<Directory /var/www/html>\n\
     Options Indexes FollowSymLinks\n\
